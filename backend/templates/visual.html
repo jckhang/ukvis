@@ -1,44 +1,61 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		
-	</head>
-	<body>
-		<h1>Route Planner</h1>
-		{% if from_station %}
-			Departing from {{ from_station }}.
-		{% else %}
-		 	No start station selected.
-		{% endif %}
-		<br/>
-		{% if to_station %}
-			Going to {{ to_station }}.
-		{% else %}
-		 	No destination station selected.
-		{% endif %}
-		
-		<h2>Plan a route</h2>
-		<form action='/route' method='POST'>
-			<label>Start Station</label>
-			<select name='start'>
-				<option value="Aldermans Green">Aldermans Green</option>
-				<option value="Baker Street">Baker Street</option>				
-				<option value="Bank">Bank</option>
-				<option value="Trafalgar Square">Trafalgar Square</option>					
-			</select> 
-			<br/>
-			
-			<label>End Station</label>
-			<select name='end'>
-				<option value="Aldermans Green">Aldermans Green</option>
-				<option value="Baker Street">Baker Street</option>				
-				<option value="Bank">Bank</option>
-				<option value="Trafalgar Square">Trafalgar Square</option>	
-			</select>
-			<br/>
-			<input type="submit" name="submit" value="Get route" id="submit">
-		</form>
-		
-	</body>
+<style>
+#tubeSvg {
+    width: 1080px;
+    height: 800px;
+    -webkit-filter: grayscale(0%);
+}
+
+#tubeSvg:hover {
+    -webkit-filter: grayscale(100%);
+}
+</style>
+
+<head>
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script> -->
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-1.12.1.min.js') }}"></script>
+    <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='js/station.js') }}"></script>
+</head>
+
+<body>
+    <h1>Route Planner</h1>
+    <h2>Plan a route</h2>
+    <div id="tubeMap"></div>
+    <form action='/route' method='POST'>
+        <label>Start Station</label>
+        <select id='stationStart'>
+            <option value="Aldermans Green">Aldermans Green</option>
+            <option value="Baker Street">Baker Street</option>
+            <option value="Bank">Bank</option>
+            <option value="Trafalgar Square">Trafalgar Square</option>
+        </select>
+        <label>End Station</label>
+        <select id='stationEnd'>
+            <option value="Aldermans Green">Aldermans Green</option>
+            <option value="Baker Street">Baker Street</option>
+            <option value="Bank">Bank</option>
+            <option value="Trafalgar Square">Trafalgar Square</option>
+        </select>
+        <br/>
+        <input type="submit" name="submit" value="Get route" id="submit">
+    </form>
+    <br> {% if from_station %} Departing from {{ from_station }}. {% else %} No start station selected. {% endif %}
+    <br> {% if to_station %} Going to {{ to_station }}. {% else %} No destination station selected. {% endif %}
+</body>
+<script>
+d3.xml("{{ url_for('static', filename='assets/map.svg') }}", "image/svg+xml", function(error, xml) {
+    if (error) throw error;
+    g = xml.documentElement;
+    g.setAttribute("id", "tubeSvg");
+    document.getElementById("tubeMap").appendChild(g);
+});
+for (p in stations) {
+    var toAppend = '<option>' + p + '</option>';
+    $("#stationStart").append(toAppend);
+    $("#stationEnd").append(toAppend);
+}
+</script>
 
 </html>
