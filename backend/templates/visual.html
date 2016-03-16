@@ -1,42 +1,50 @@
 <!DOCTYLE html>
 <html lang='en'>
-    <head>
-        <title>VISUALIZATION</title>
-        <style>
-            body {
-                font-family: sans-serif;
-            }
-            #mapLegend {
-                padding-right: 40px;
-                float:right;
-            }
-            circle {
-                opacity: 0.85;
-            }
-            .domain {
-                fill: none;
-                stroke: #000;
-            }
-            .tick { 
-                font-size: 15;
-            }
-            .tick line {
-                stroke: #ccc;
-            }
-            #tooltip {
-                position: absolute;
-                right: 5;
-                background-color: rgba(192,188,188,0.4);
-                padding: 5;
-                border: solid 1px grey;
-                visibility: hidden;
-                transition: all 0.2s;
-            }
-        </style>
-    </head>
-    <body>
-        <div id='mapLegend'>
-            <h5>Relative Pollution<p>Values</h3>
+
+<head>
+    <title>VISUALIZATION</title>
+    <style>
+    body {
+        font-family: sans-serif;
+    }
+    
+    #mapLegend {
+        padding-right: 40px;
+        float: right;
+    }
+    
+    circle {
+        opacity: 0.85;
+    }
+    
+    .domain {
+        fill: none;
+        stroke: #000;
+    }
+    
+    .tick {
+        font-size: 15;
+    }
+    
+    .tick line {
+        stroke: #ccc;
+    }
+    
+    #tooltip {
+        position: absolute;
+        right: 5;
+        background-color: rgba(192, 188, 188, 0.4);
+        padding: 5;
+        border: solid 1px grey;
+        visibility: hidden;
+        transition: all 0.2s;
+    }
+    </style>
+</head>
+
+<body>
+    <div id='mapLegend'>
+        <h5>Relative Pollution<p>Values</h3>
             <svg width="100" height="800">
                 <g id='legend'></g>
             </svg>
@@ -48,7 +56,7 @@
 
     <script>
         //Parameters
-        var height = 800;
+        var height = 550;
         var width = 1000;
         var margin = {top: 20, left: 30, right: 20, bottom: 20};
         var innerHeight = height - margin.top - margin.bottom;
@@ -101,7 +109,7 @@
                 .data(values, function(d) {return d.N})
                 .enter()
                 .append("circle")
-                    .attr('r',5)
+                    .attr('r',3)
                     .attr("cy", function(d,i) {return yScale(d.N)})
                     .attr("fill", function(d,i) {return colorScale(d.line)})
                     .on('click', function(d,i) {alert(d.N)})
