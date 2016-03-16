@@ -1,90 +1,147 @@
-<!DOCTYPE html>
-<html>
-<style>
-#tubeSvg {
-    width: 1080px;
-    height: 800px;
-    -webkit-filter: grayscale(0%);
-}
+<!DOCTYLE html>
+<html lang='en'>
+    <head>
+        <title>VISUALIZATION</title>
+        <style>
+            body {
+                font-family: sans-serif;
+            }
+            #mapLegend {
+                padding-right: 40px;
+                float:right;
+            }
+            circle {
+                opacity: 0.85;
+            }
+            .domain {
+                fill: none;
+                stroke: #000;
+            }
+            .tick { 
+                font-size: 15;
+            }
+            .tick line {
+                stroke: #ccc;
+            }
+            #tooltip {
+                position: absolute;
+                right: 5;
+                background-color: rgba(192,188,188,0.4);
+                padding: 5;
+                border: solid 1px grey;
+                visibility: hidden;
+                transition: all 0.2s;
+            }
+        </style>
+    </head>
+    <body>
+        <div id='mapLegend'>
+            <h5>Relative Pollution<p>Values</h3>
+            <svg width="100" height="800">
+                <g id='legend'></g>
+            </svg>
+            <div id="tooltip">ToolTip</div>
+        </div>
+    </body>
+    
+    <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
 
-</style>
+    <script>
+        //Parameters
+        var height = 800;
+        var width = 1000;
+        var margin = {top: 20, left: 30, right: 20, bottom: 20};
+        var innerHeight = height - margin.top - margin.bottom;
+        var innerWidth = width - margin.left - margin.right;
+        var colorRange = ['#00a3e0', '#000000', '#a45a2a', '#da291c', '#10069f', '#e89cae', '#7c878e', '#007a33', '#ffcd00', '#840b55', '#00b2a9'];
+       
+        //global variables
+        var data = [];
+        var chart = d3.select("#legend");
+        var yAxisGroup = chart.append('g')
+            .attr('transform', "translate(" 
+                  + margin.left
+                  + "," 
+                  + margin.top + ")");
+        var dotGroup = chart.append('g')
+            .attr('transform', "translate(" + margin.left + "," + margin.top + ")");
 
-<head>
-    <script src="https://d3js.org/d3.v3.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-    <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='js/station.js') }}"></script>
-    <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='js/lines.js') }}"></script>
-    <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='js/main.js') }}"></script>
-    <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='js/color.js') }}"></script>
-</head>
-
-<body>
-    <h1>Route Planner</h1>
-    <h2>Plan a route</h2>
-    <div id="tubeMap" onclick="showStation(event)"></div>
-    <form action='/route' method='POST'>
-        <label>Start Station</label>
-        <select id='stationStart'>
-            <option value="Aldermans Green">Aldermans Green</option>
-            <option value="Baker Street">Baker Street</option>
-            <option value="Bank">Bank</option>
-            <option value="Trafalgar Square">Trafalgar Square</option>
-        </select>
-        <label>End Station</label>
-        <select id='stationEnd'>
-            <option value="Aldermans Green">Aldermans Green</option>
-            <option value="Baker Street">Baker Street</option>
-            <option value="Bank">Bank</option>
-            <option value="Trafalgar Square">Trafalgar Square</option>
-        </select>
-        <br/>
-        <input type="submit" name="submit" value="Get route" id="submit">
-    </form>
-    <br> {% if from_station %} Departing from {{ from_station }}. {% else %} No start station selected. {% endif %}
-    <br> {% if to_station %} Going to {{ to_station }}. {% else %} No destination station selected. {% endif %}
-    <button onclick="draw()" id="draw">Gray it!</button>
-</body>
-<script>
-var lineFunction = d3.svg.line()
-    .x(function(d) {
-        return d.start.x;
-    })
-    .y(function(d) {
-        return d.start.y;
-    })
-    .interpolate("linear");
-
-d3.xml("{{ url_for('static', filename='assets/map_svg.svg') }}", "image/svg+xml", function(error, xml) {
-    if (error) throw error;
-    g = xml.documentElement;
-    g.setAttribute("id", "tubeSvg");
-    document.getElementById("tubeMap").appendChild(g);
-});
-
-function draw() {
-    var svg = d3.select("#tubeSvg");
-    svg.style("-webkit-filter", "grayscale(100%)");
-    d3.json("{{ url_for('static', filename='assets/Bakerloo.json') }}", function(err, json) {
-        var lineData = json;
-        var svgContainer = d3.select("tubeSvg");
-        console.log(svgContainer);	x
-        for (lineSegIndex in lineData) {
-        	var lineName = "Bakerloo";
-        	var lineSeg =  lineData[lineSegIndex];
-            var startX = lineSeg.start.x;
-            var startY = lineSeg.start.y;
-            var endX = lineSeg.end.x;
-            var endY = lineSeg.end.y;
-            var lineGraph = svgContainer.append("line")
-                .attr("x1", startX)
-                .attr("y1", startY)
-                .attr("x2", endX)
-                .attr("y2", endY)
-                .attr("stroke", lineColor[lineName])
-                .attr("stroke-width", 2)
+        //Global functions
+        function highlight(name) {
+            dotGroup.selectAll('circle').style("stroke", function(d,i) {
+                return d.N});
         }
-    });
-}
-</script>
-
+        
+        function unHighlight() {
+            dotGroup.selectAll('circle').style("stroke", undefined);
+        }
+        
+        //Render the chart
+        function renderChart(values) {
+            //chart properties
+            chart
+                .attr('height', height)
+            
+            //set scales
+            var yScale = d3.scale.sqrt()
+                .range([innerHeight, 0])
+                .domain(d3.extent(values, function(d) {return d.N}));
+            var colorScale = d3.scale.ordinal().range(colorRange);
+            
+            //set axes
+            var yAxis = d3.svg.axis()
+                .scale(yScale)
+                .orient('left')
+            
+            //call the axis groups    
+            yAxisGroup.call(yAxis);
+            
+            //add the circles to the plot
+            dotGroup.selectAll("circle")
+                .data(values, function(d) {return d.N})
+                .enter()
+                .append("circle")
+                    .attr('r',5)
+                    .attr("cy", function(d,i) {return yScale(d.N)})
+                    .attr("fill", function(d,i) {return colorScale(d.line)})
+                    .on('click', function(d,i) {alert(d.N)})
+                    .on('mouseenter', function(d,i) {
+                        highlight(d.N);
+                        d3.select('#tooltip').style({
+                            visibility: 'visible',
+                            top: d3.event.clientY,
+                            left: d3.event.clientX
+                        }).html("Line: " + d.line + "<p>" + "Station: " + d.station + "<p>" + "Pollution: " + d.N)
+                    })
+                    .on('mouseleave', function(d,i) {
+                        unHighlight(d.N);
+                        d3.select('#tooltip').style({
+                            visibility: 'hidden'
+                        })
+                    })
+            
+            dotGroup.selectAll("circle").transition()
+                .attr('r',5)
+                .attr("cy", function(d,i) {return yScale(d.N)})
+                .attr("fill", function(d,i) {return colorScale(d.line)})
+        }
+        
+        //master render function
+        function render(data) {
+            /*//parse values for relevant values
+            var parsed = data.filter(function(d) {return d.N 
+                != undefined});
+            var filtered = parsed.filter(function (d) {return d.N != undefined});
+            
+            //render visuals*/
+            renderChart(data);
+        }
+        
+        //Load data, run visualizations        
+        d3.csv('{{ url_for('static', filename='resources/CUSPTubeDummy.csv') }}', 
+        function(error, result) {
+            data = result;
+            render(result);
+        })   
+    </script>
 </html>
