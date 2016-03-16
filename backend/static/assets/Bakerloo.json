@@ -1,0 +1,133 @@
+[{
+    "start_station": "Harrow & Wealdstone",
+    "start": { "x": "283", "y": "304" },
+    "end_station": "Kenton",
+    "end": { "x": "283", "y": "317" },
+    "line": "Bakerloo"
+}, {
+    "start_station": "Kenton",
+    "start": { "x": "283", "y": "317" },
+    "end_station": "South Kenton",
+    "end": { "x": "283", "y": "345" },
+    "line": "Bakerloo"
+}, {
+    "start_station": "South Kenton",
+    "start": { "x": "283", "y": "345" },
+    "end_station": "North Wembley",
+    "end": { "x": "283", "y": "355" },
+    "line": "Bakerloo"
+}, {
+    "start_station": "North Wembley",
+    "start": { "x": "283", "y": "355" },
+    "end_station": "Wembley Central",
+    "end": { "x": "283", "y": "364" },
+    "line": "Bakerloo"
+}, {
+    "start_station": "Wembley Central",
+    "start": { "x": "283", "y": "364" },
+    "end_station": "Stonebridge Park",
+    "end": { "x": "283", "y": "375" },
+    "line": "Bakerloo"
+}, {
+    "start_station": "Stonebridge Park",
+    "start": { "x": "283", "y": "375" },
+    "end_station": "Harlesden",
+    "end": { "x": "282", "y": "385" },
+    "line": "Bakerloo"
+}, {
+    "start_station": "Harlesden",
+    "start": { "x": "282", "y": "385" },
+    "end_station": "Willesden Junction",
+    "end": { "x": "284", "y": "399" },
+    "line": "Bakerloo"
+}, {
+    "start_station": "Willesden Junction",
+    "start": { "x": "284", "y": "399" },
+    "end_station": "Kensal Green",
+    "end": { "x": "283", "y": "408" },
+    "line": "Bakerloo"
+}, {
+    "start_station": "Kensal Green",
+    "start": { "x": "283", "y": "408" },
+    "end_station": "Kilburn Park",
+    "end": { "x": "286", "y": "430" },
+    "line": "Bakerloo"
+}, {
+    "start_station": "Kilburn Park",
+    "start": { "x": "286", "y": "430" },
+    "end_station": "Maida Vale",
+    "end": { "x": "293", "y": "438" },
+    "line": "Bakerloo"
+}, {
+    "start_station": "Maida Vale",
+    "start": { "x": "293", "y": "438" },
+    "end_station": "Warwick Avenue",
+    "end": { "x": "300", "y": "444" },
+    "line": "Bakerloo"
+}, {
+    "start_station": "Warwick Avenue",
+    "start": { "x": "300", "y": "444" },
+    "end_station": "Paddington",
+    "end": { "x": "328", "y": "449" },
+    "line": "Bakerloo"
+}, {
+    "start_station": "Paddington",
+    "start": { "x": "328", "y": "449" },
+    "end_station": "Edgware Road",
+    "end": { "x": "359", "y": "449" },
+    "line": "Bakerloo"
+}, {
+    "start_station": "Edgware Road",
+    "start": { "x": "359", "y": "449" },
+    "end_station": "Marylebone",
+    "end": { "x": "385", "y": "449" },
+    "line": "Bakerloo"
+}, {
+    "start_station": "Marylebone",
+    "start": { "x": "385", "y": "449" },
+    "end_station": "Baker Street",
+    "end": { "x": "415", "y": "468" },
+    "line": "Bakerloo"
+}, {
+    "start_station": "Baker Street",
+    "start": { "x": "415", "y": "468" },
+    "end_station": "Oxford Circus",
+    "end": { "x": "443", "y": "511" },
+    "line": "Bakerloo"
+}, {
+    "start_station": "Oxford Circus",
+    "start": { "x": "443", "y": "511" },
+    "end_station": "Piccadilly Circus",
+    "end": { "x": "462", "y": "539" },
+    "line": "Bakerloo"
+}, {
+    "start_station": "Piccadilly Circus",
+    "start": { "x": "462", "y": "539" },
+    "end_station": "Charing Cross",
+    "end": { "x": "485", "y": "562" },
+    "line": "Bakerloo"
+}, {
+    "start_station": "Charing Cross",
+    "start": { "x": "485", "y": "562" },
+    "end_station": "Embankment",
+    "end": { "x": "492", "y": "589" },
+    "line": "Bakerloo"
+}, {
+    "start_station": "Embankment",
+    "start": { "x": "492", "y": "589" },
+    "end_station": "Waterloo",
+    "end": { "x": "492", "y": "606" },
+    "line": "Bakerloo"
+}, {
+    "start_station": "Waterloo",
+    "start": { "x": "492", "y": "606" },
+    "end_station": "Lambeth",
+    "end": { "x": "492", "y": "622" },
+    "line": "Bakerloo"
+}, {
+    "start_station": "Lambeth",
+    "start": { "x": "492", "y": "622" },
+    "end_station": "Elephant & Castle",
+    "end": { "x": "502", "y": "644" },
+    "line": "Bakerloo"
+}]

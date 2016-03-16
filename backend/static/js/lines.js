@@ -29,58 +29,87 @@ lines.push({
         "Elephant & Castle"
     ]
 })
-line.push({
-"Central":[
-"Epping"
-"Theydon Bois"
-"Debden"
-"Loughton"
-"Buckhurst Hill"
-"Woodford"
-"Roding Valley"
-"Chigwell"
-Grange Hill
-Hainault
-Fairlop
-Barkingside
-Newbury Park
-Gants Hill (15 photos)
-Redbridge (three photos)
-Wanstead
-South Woodford
-Snaresbrook (12 photos)
-
-Leytonstone (nine photos)
-Leyton
-Stratford Docklands Light Railway Jubilee (24 photos)
-Mile End Hammersmith & City  District (two photos)
-Bethnal Green
-Liverpool Street Circle Hammersmith & City Metropolitan (one photo)
-Bank Waterloo & City Northern Docklands Light Railway (20 photos)
-St. Paul's (eight photos)
-Chancery Lane
-Holborn Piccadilly (15 photos)
-Tottenham Court Road Northern (one photo)
-Oxford Circus Bakerloo Victoria (nine photos)
-Bond Street Jubilee
-Marble Arch (two photos)
-Lancaster Gate
-Queensway (seven photos)
-Notting Hill Gate  Circle  District (three photos)
-Holland Park
-Shepherd's Bush (two photos)
-White City
-East Acton
-North Acton
-
-West Acton
-Ealing Broadway District
-Hanger Lane (six photos)
-Perivale
-Greenford
-Northolt (two photos)
-South Ruislip
-Ruislip Gardens
-West Ruislip
+lines.push({
+    "Central": [
+        "Epping",
+        "Theydon Bois",
+        "Debden",
+        "Loughton",
+        "Buckhurst Hill",
+        "Woodford",
+        "Roding Valley",
+        "Chigwell",
+        "Grange Hill",
+        "Hainault",
+        "Fairlop",
+        "Barkingside",
+        "Newbury Park",
+        "Gants Hill",
+        "Redbridge",
+        "Wanstead",
+        "South Woodford",
+        "Snaresbrook",
+        "Leytonstone",
+        "Leyton",
+        "Stratford",
+        "Mile End",
+        "Bethnal Green",
+        "Liverpool Street",
+        "Bank",
+        "St. Paul's",
+        "Chancery Lane",
+        "Holborn",
+        "Tottenham Court Road",
+        "Oxford Circus",
+        "Bond Street",
+        "Marble Arch",
+        "Lancaster Gate",
+        "Queensway",
+        "Notting Hill Gate",
+        "Holland Park",
+        "Shepherd's Bush",
+        "White City",
+        "East Acton",
+        "North Acton",
+        "West Acton",
+        "Ealing Broadway",
+        "Hanger Lane",
+        "Perivale",
+        "Greenford",
+        "Northolt",
+        "South Ruislip",
+        "Ruislip Gardens",
+        "West Ruislip"
+    ]
 })
-
+lines.push({
+    "Circle": [
+        "Tower Hill",
+        "Aldgate",
+        "Liverpool Street",
+        "Moorgate",
+        "Barbican",
+        "Farringdon",
+        "King's Cross",
+        "Euston Square",
+        "Great Portland Street",
+        "Baker Street",
+        "Edgware Road",
+        "Paddington",
+        "Bayswater",
+        "Notting Hill Gate",
+        "High Street Kensington",
+        "Gloucester Road",
+        "South Kensington",
+        "Sloane Square",
+        "Victoria",
+        "St.James's Park",
+        "Westminster",
+        "Embankment",
+        "Temple",
+        "Blackfriars",
+        "Mansion House",
+        "Cannon Street",
+        "Monument"
+    ]
+});

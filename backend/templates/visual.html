@@ -17,9 +17,10 @@
 <head>
     <script src="https://d3js.org/d3.v3.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-1.12.1.min.js') }}"></script>
     <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='js/station.js') }}"></script>
     <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='js/lines.js') }}"></script>
+    <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='js/color.js') }}"></script>
 </head>
 
 <body>
@@ -46,64 +47,49 @@
     </form>
     <br> {% if from_station %} Departing from {{ from_station }}. {% else %} No start station selected. {% endif %}
     <br> {% if to_station %} Going to {{ to_station }}. {% else %} No destination station selected. {% endif %}
-    <button onclick="draw()" id="draw">Draw</button>
+    <button onclick="draw()" id="draw">Gray it!</button>
 </body>
 <script>
+var lineFunction = d3.svg.line()
+    .x(function(d) {
+        return d.start.x;
+    })
+    .y(function(d) {
+        return d.start.y;
+    })
+    .interpolate("linear");
+
 d3.xml("{{ url_for('static', filename='assets/map_svg.svg') }}", "image/svg+xml", function(error, xml) {
     if (error) throw error;
     g = xml.documentElement;
     g.setAttribute("id", "tubeSvg");
     document.getElementById("tubeMap").appendChild(g);
 });
-for (p in stations) {
-    var toAppend = '<option>' + p + '</option>';
-    var station = stations[p];
-    $("#stationStart").append(toAppend);
-    $("#stationEnd").append(toAppend);
-}
 
 function draw() {
     var svg = d3.select("#tubeSvg");
     svg.style("-webkit-filter", "grayscale(100%)");
-    var path = ["Amersham", "Chesham", "Chalfont & Latimer"];
-    var lineFunction = d3.svg.line()
-        .x(function(d) {
-            console.log(stations[d].x);
-            return stations[d].x;
-        })
-        .y(function(d) {
-            console.log(stations[d].y);
-            return stations[d].y;
-        })
-        .interpolate("linear");
-    var tubeSvg = d3.select("#tubeSvg");
-    tubeSvg.append("path")
-        .attr('d', lineFunction(path))
-        .attr("stroke", "blue")
-        .attr("stroke-width", 2)
-        .attr("fill", "none");
-}
-var t = 0;
-var lineName = "Bakerloo";
-console.log(lines[0]["Bakerloo"][t]);
-
-function showStation(evt) {
-    var e = evt.target;
-    var dim = e.getBoundingClientRect();
-    var x = evt.clientX;
-    var y = evt.clientY;
-    var line = lines[0]["Bakerloo"];
-    var obj = {"station": line[t],"line":lineName, "x":x,"y":y}
-    console.log(obj);
-    t+=1;
-    console.log(line[t]);
-    $.post("http://cs139.dcs.warwick.ac.uk/~apc/cs139/hackathon/save.php",
-    	obj,
-    	function(data) {
-    		console.log(data);
-    	});
-
-
+    d3.json("{{ url_for('static', filename='assets/Bakerloo.json') }}", function(err, json) {
+        var lineData = json;
+        var svgContainer = d3.select("body").append("svg")
+            .attr("width", 1080)
+            .attr("height", 800);
+        for (lineSegIndex in lineData) {
+        	var lineName = "Bakerloo";
+        	var lineSeg =  lineData[lineSegIndex];
+            var startX = lineSeg.start.x;
+            var startY = lineSeg.start.y;
+            var endX = lineSeg.end.x;
+            var endY = lineSeg.end.y;
+            var lineGraph = svgContainer.append("line")
+                .attr("x1", startX)
+                .attr("y1", startY)
+                .attr("x2", endX)
+                .attr("y2", endY)
+                .attr("stroke", lineColor[lineName])
+                .attr("stroke-width", 2)
+        }
+    });
 }
 </script>
 
