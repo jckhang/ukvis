@@ -7,11 +7,6 @@
     -webkit-filter: grayscale(0%);
 }
 
-
-/*#tubeSvg:hover {
-    -webkit-filter: grayscale(100%);
-}
-*/
 </style>
 
 <head>
@@ -71,9 +66,8 @@ function draw() {
     svg.style("-webkit-filter", "grayscale(100%)");
     d3.json("{{ url_for('static', filename='assets/Bakerloo.json') }}", function(err, json) {
         var lineData = json;
-        var svgContainer = d3.select("body").append("svg")
-            .attr("width", 1080)
-            .attr("height", 800);
+        var svgContainer = d3.select("tubeSvg");
+        console.log(svgContainer);	x
         for (lineSegIndex in lineData) {
         	var lineName = "Bakerloo";
         	var lineSeg =  lineData[lineSegIndex];
