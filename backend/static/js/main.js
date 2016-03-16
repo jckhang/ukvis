@@ -9,7 +9,7 @@ var lineName = [];
 for (line in lines) {
     lineName.push(Object.keys(lines[line]))
 }
-var cLine = 3;
+var cLine = 5;
 var cStation = 0;
 var cLineLen = lines[cLine][lineName[cLine]].length;
 console.log("Now Start parse Line: " + lineName[cLine]);
@@ -31,18 +31,18 @@ function showStation(evt) {
     console.log(obj);
     cStation += 1;
     console.log(cStation);
-    // $.post("http://cs139.dcs.warwick.ac.uk/~apc/cs139/hackathon/save.php",
-    //     obj,
-    //     function(data) {
-    //         console.log(data);
-    //     });
+    $.post("http://cs139.dcs.warwick.ac.uk/~apc/cs139/hackathon/save.php",
+        obj,
+        function(data) {
+            console.log(data);
+        });
     if (cStation < cLineLen) {
         console.log("Next station: " + lines[cLine][lineName[cLine]][cStation]);
     } else {
         cLine += 1;
         cStation = 0;
         cLineLen = lines[cLine][lineName[cLine]].length;
-        if (cLine>7) {
+        if (cLine > 5) {
             alert("Finished");
         } else {
             console.log("Now Start parse Line: " + lineName[cLine]);

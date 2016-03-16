@@ -7,6 +7,11 @@
     -webkit-filter: grayscale(0%);
 }
 
+
+/*#tubeSvg:hover {
+    -webkit-filter: grayscale(100%);
+}
+*/
 </style>
 
 <head>
@@ -35,13 +40,14 @@
             <option value="Aldermans Green">Aldermans Green</option>
             <option value="Baker Street">Baker Street</option>
             <option value="Bank">Bank</option>
-            <option value="Trafalgar Square">Trafalgar Square</option>
+            <option value="Trafalgar Square">Trafalgar Square	</option>
         </select>
         <br/>
         <input type="submit" name="submit" value="Get route" id="submit">
     </form>
     <br> {% if from_station %} Departing from {{ from_station }}. {% else %} No start station selected. {% endif %}
     <br> {% if to_station %} Going to {{ to_station }}. {% else %} No destination station selected. {% endif %}
+    <br> The path is {{ path }}.
     <button onclick="draw()" id="draw">Gray it!</button>
 </body>
 <script>
@@ -54,7 +60,7 @@ var lineFunction = d3.svg.line()
     })
     .interpolate("linear");
 
-d3.xml("{{ url_for('static', filename='assets/map_svg.svg') }}", "image/svg+xml", function(error, xml) {
+d3.xml("{{ url_for('static', filename='assets/map.svg') }}", "image/svg+xml", function(error, xml) {
     if (error) throw error;
     g = xml.documentElement;
     g.setAttribute("id", "tubeSvg");
@@ -63,27 +69,40 @@ d3.xml("{{ url_for('static', filename='assets/map_svg.svg') }}", "image/svg+xml"
 
 function draw() {
     var svg = d3.select("#tubeSvg");
+    scentral
+    sbakerloo
+    scircle
+    sdistrict
+    shnc
+    sjubilee
+    smetropolitan
+    snorthern
+    spiccadilly
+    svictoria
+    
     svg.style("-webkit-filter", "grayscale(100%)");
-    d3.json("{{ url_for('static', filename='assets/Bakerloo.json') }}", function(err, json) {
-        var lineData = json;
-        var svgContainer = d3.select("tubeSvg");
-        console.log(svgContainer);	x
-        for (lineSegIndex in lineData) {
-        	var lineName = "Bakerloo";
-        	var lineSeg =  lineData[lineSegIndex];
-            var startX = lineSeg.start.x;
-            var startY = lineSeg.start.y;
-            var endX = lineSeg.end.x;
-            var endY = lineSeg.end.y;
-            var lineGraph = svgContainer.append("line")
-                .attr("x1", startX)
-                .attr("y1", startY)
-                .attr("x2", endX)
-                .attr("y2", endY)
-                .attr("stroke", lineColor[lineName])
-                .attr("stroke-width", 2)
-        }
-    });
+    // d3.json("{{ url_for('static', filename='assets/Bakerloo.json') }}", function(err, json) {
+    //     var lineData = json;
+    //     var svgContainer = d3.select("body").append("svg")
+    //     	.attr("id","pollSvg")
+    //         .attr("width", 1080)
+    //         .attr("height", 800);
+    //     for (lineSegIndex in lineData) {
+    //     	var lineName = "Bakerloo";
+    //     	var lineSeg =  lineData[lineSegIndex];
+    //         var startX = lineSeg.start.x;
+    //         var startY = lineSeg.start.y;
+    //         var endX = lineSeg.end.x;
+    //         var endY = lineSeg.end.y;
+    //         var lineGraph = svgContainer.append("line")
+    //             .attr("x1", startX)
+    //             .attr("y1", startY)
+    //             .attr("x2", endX)
+    //             .attr("y2", endY)
+    //             .attr("stroke", lineColor[lineName])
+    //             .attr("stroke-width", 2)
+    //     }
+    // });
 }
 </script>
 

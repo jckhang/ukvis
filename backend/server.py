@@ -15,11 +15,13 @@ def vis():
 def route():
     from_station = request.form['start']
     to_station = request.form['end']
-
+    from_station = "a"
+    to_station = "b"
     # Smart routing goes here!
-
+    path = ["a", "b", "c"]
     return render_template('visual.html',
                            from_station=from_station,
+                           path=path,
                            to_station=to_station)
 
 if __name__ == "__main__":
