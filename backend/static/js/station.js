@@ -1,5 +1,7 @@
 var stations = stations || {};
-
+function sortObject(o) {
+    return Object.keys(o).sort().reduce((r, k) => (r[k] = o[k], r), {});
+}
 stations["Amersham"] = { x: 117.5674, y: 193.3823 };
 stations["Chorleywood"] = { x: 285.0654, y: 207.4351 };
 stations["Mill Hill East"] = { x: 1316.9741, y: 261.0347 };
@@ -357,3 +359,4 @@ stations["Waterloo"] = { x: 1233.7144, y: 1167.7651 };
 stations["Southwark"] = { x: 1371.5142, y: 1222.0054 };
 stations["Embankment"] = { x: 1356.7544, y: 1120.8647 };
 stations["Marble Arch"] = { x: 1073.6084, y: 916.062 };
+stations = sortObject(stations);

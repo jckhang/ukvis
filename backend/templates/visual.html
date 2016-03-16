@@ -1,4 +1,15 @@
 <!DOCTYLE html>
+<style>
+#tubeSvg {
+    width: 1080px;
+    height: 600px;
+    -webkit-filter: grayscale(0%);
+}
+
+#mapLegend {
+    float: right;
+}
+</style>
 <html lang='en'>
 
 <head>
@@ -6,11 +17,6 @@
     <style>
     body {
         font-family: sans-serif;
-    }
-    
-    #mapLegend {
-        padding-right: 40px;
-        float: right;
     }
     
     circle {
@@ -32,8 +38,8 @@
     
     #tooltip {
         position: absolute;
-        right: 5;
-        background-color: rgba(192, 188, 188, 0.4);
+        left: 15;
+        background-color: rgba(192, 188, 188, 0.8);
         padding: 5;
         border: solid 1px grey;
         visibility: hidden;
@@ -43,113 +49,187 @@
 </head>
 
 <body>
+    <div id="tooltip">ToolTip</div>
     <div id='mapLegend'>
-        <h5>Relative Pollution<p>Values</h3>
-            <svg width="100" height="800">
-                <g id='legend'></g>
-            </svg>
-            <div id="tooltip">ToolTip</div>
-        </div>
-    </body>
-    
-    <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
+        <h5>Relative Pollution<p>Values</h5>
+        <svg width="100" height="800">
+            <g id='legend'></g>
+        </svg>
+    </div>
+    <div id="tubeMap" onclick="link(event)">
+        <!-- <img src="{{ url_for('static', filename='img/tubemap-2012-12.png') }}" id="tubeSvg"> -->
+    </div>
+    <form action='/route' method='POST'>
+        <label>Start Station</label>
+        <select id='stationStart'>
+            <option value="Aldermans Green">Aldermans Green</option>
+            <option value="Baker Street">Baker Street</option>
+            <option value="Bank">Bank</option>
+            <option value="Trafalgar Square">Trafalgar Square</option>
+        </select>
+        <label>End Station</label>
+        <select id='stationEnd'>
+            <option value="Aldermans Green">Aldermans Green</option>
+            <option value="Baker Street">Baker Street</option>
+            <option value="Bank">Bank</option>
+            <option value="Trafalgar Square">Trafalgar Square </option>
+        </select>
+        <br/>
+        <input type="submit" name="submit" value="Get route" id="submit">
+    </form>
+</body>
+<script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='js/station.js') }}"></script>
+<script>
+//Parameters
+var height = 550;
+var width = 1000;
+var margin = {
+    top: 20,
+    left: 30,
+    right: 20,
+    bottom: 20
+};
+var innerHeight = height - margin.top - margin.bottom;
+var innerWidth = width - margin.left - margin.right;
+var colorRange = ['#00a3e0', '#000000', '#a45a2a', '#da291c', '#10069f', '#e89cae', '#7c878e', '#007a33', '#ffcd00', '#840b55', '#00b2a9'];
 
-    <script>
-        //Parameters
-        var height = 550;
-        var width = 1000;
-        var margin = {top: 20, left: 30, right: 20, bottom: 20};
-        var innerHeight = height - margin.top - margin.bottom;
-        var innerWidth = width - margin.left - margin.right;
-        var colorRange = ['#00a3e0', '#000000', '#a45a2a', '#da291c', '#10069f', '#e89cae', '#7c878e', '#007a33', '#ffcd00', '#840b55', '#00b2a9'];
-       
-        //global variables
-        var data = [];
-        var chart = d3.select("#legend");
-        var yAxisGroup = chart.append('g')
-            .attr('transform', "translate(" 
-                  + margin.left
-                  + "," 
-                  + margin.top + ")");
-        var dotGroup = chart.append('g')
-            .attr('transform', "translate(" + margin.left + "," + margin.top + ")");
+//global variables
+var data = [];
+var chart = d3.select("#legend");
+var yAxisGroup = chart.append('g')
+    .attr('transform', "translate(" + margin.left + "," + margin.top + ")");
+var dotGroup = chart.append('g')
+    .attr('transform', "translate(" + margin.left + "," + margin.top + ")");
 
-        //Global functions
-        function highlight(name) {
-            dotGroup.selectAll('circle').style("stroke", function(d,i) {
-                return d.N});
-        }
-        
-        function unHighlight() {
-            dotGroup.selectAll('circle').style("stroke", undefined);
-        }
-        
-        //Render the chart
-        function renderChart(values) {
-            //chart properties
-            chart
-                .attr('height', height)
+//Global functions
+function highlight(name) {
+    dotGroup.selectAll('circle').style("stroke", function(d, i) {
+        return d.N
+    });
+}
+
+function unHighlight() {
+    dotGroup.selectAll('circle').style("stroke", undefined);
+}
+
+var t = 0;
+//Render the chart
+function renderChart(values) {
+    //chart properties
+    chart
+        .attr('height', height)
+
+    //set scales
+    var yScale = d3.scale.sqrt()
+        .range([innerHeight, 0])
+        .domain(d3.extent(values, function(d) {
+            return d.N
+        }));
+    var colorScale = d3.scale.ordinal().range(colorRange);
+
+    //set axes
+    var yAxis = d3.svg.axis()
+        .scale(yScale)
+        .orient('left')
+
+    //call the axis groups    
+    yAxisGroup.call(yAxis);
+
+    //add the circles to the plot
+    dotGroup.selectAll("circle")
+        .data(values, function(d) {
+            return d.N
+        })
+        .enter()
+        .append("circle")
+        .attr('r', 5)
+        .attr("cy", function(d, i) {
+            return yScale(d.N)
+        })
+        .attr("fill", function(d, i) {
+            return colorScale(d.line)
+        })
+        .on('mouseenter', function(d, i) {
+            highlight(d.N);
+            d3.select('#tooltip').style({
+                visibility: 'visible',
+                top: d3.event.clientY,
+                left: d3.event.clientX
+            }).html("Line: " + d.line + "<p>" + "Station: " + d.station + "<p>" + "Pollution: " + d.N)
+        })
+        .on('mouseleave', function(d, i) {
+            unHighlight(d.N);
+            d3.select('#tooltip').style({
+                visibility: 'hidden'
+            })
+        })
+
+    dotGroup.selectAll("circle").transition()
+        .attr('r', 5)
+        .attr("cy", function(d, i) {
+            return yScale(d.N)
+        })
+        .attr("fill", function(d, i) {
+            return colorScale(d.line)
+        })
+}
+
+//master render function
+function render(data) {
+    /*//parse values for relevant values
+    var parsed = data.filter(function(d) {return d.N 
+        != undefined});
+    var filtered = parsed.filter(function (d) {return d.N != undefined});
             
-            //set scales
-            var yScale = d3.scale.sqrt()
-                .range([innerHeight, 0])
-                .domain(d3.extent(values, function(d) {return d.N}));
-            var colorScale = d3.scale.ordinal().range(colorRange);
-            
-            //set axes
-            var yAxis = d3.svg.axis()
-                .scale(yScale)
-                .orient('left')
-            
-            //call the axis groups    
-            yAxisGroup.call(yAxis);
-            
-            //add the circles to the plot
-            dotGroup.selectAll("circle")
-                .data(values, function(d) {return d.N})
-                .enter()
-                .append("circle")
-                    .attr('r',3)
-                    .attr("cy", function(d,i) {return yScale(d.N)})
-                    .attr("fill", function(d,i) {return colorScale(d.line)})
-                    .on('click', function(d,i) {alert(d.N)})
-                    .on('mouseenter', function(d,i) {
-                        highlight(d.N);
-                        d3.select('#tooltip').style({
-                            visibility: 'visible',
-                            top: d3.event.clientY,
-                            left: d3.event.clientX
-                        }).html("Line: " + d.line + "<p>" + "Station: " + d.station + "<p>" + "Pollution: " + d.N)
-                    })
-                    .on('mouseleave', function(d,i) {
-                        unHighlight(d.N);
-                        d3.select('#tooltip').style({
-                            visibility: 'hidden'
-                        })
-                    })
-            
-            dotGroup.selectAll("circle").transition()
-                .attr('r',5)
-                .attr("cy", function(d,i) {return yScale(d.N)})
-                .attr("fill", function(d,i) {return colorScale(d.line)})
-        }
-        
-        //master render function
-        function render(data) {
-            /*//parse values for relevant values
-            var parsed = data.filter(function(d) {return d.N 
-                != undefined});
-            var filtered = parsed.filter(function (d) {return d.N != undefined});
-            
-            //render visuals*/
-            renderChart(data);
-        }
-        
-        //Load data, run visualizations        
-        d3.csv('{{ url_for('static', filename='resources/CUSPTubeDummy.csv') }}', 
-        function(error, result) {
-            data = result;
-            render(result);
-        })   
-    </script>
+    //render visuals*/
+    renderChart(data);
+}
+
+//Load data, run visualizations        
+d3.csv("{{ url_for('static', filename='resources/CUSPTubeDummy.csv') }}",
+    function(error, result) {
+        data = result;
+        render(result);
+    })
+// d3.xml("{{ url_for('static', filename='assets/map_svg.svg') }}", "image/svg+xml", function(error, xml) {
+d3.xml("{{ url_for('static', filename='assets/map.svg') }}", "image/svg+xml", function(error, xml) {    
+    if (error) throw error;
+    g = xml.documentElement;
+    g.setAttribute("id", "tubeSvg");
+    document.getElementById("tubeMap").appendChild(g);
+});
+console.log(t);
+
+function link(event) {
+    if (t % 4 == 0) {
+        t += 1;
+        d3.select('#tooltip').style({
+            visibility: 'visible',
+            top: event.clientY,
+            left: event.clientX
+        }).html("Line: District" + "<p>" + "Station: Upminster" + "<p>" + "Pollution: 0.07");
+    } else if (t % 4 == 2) {
+        t += 1;
+        d3.select('#tooltip').style({
+            visibility: 'visible',
+            top: event.clientY,
+            left: event.clientX
+        }).html("Line: Docklands Light Railway" + "<p>" + "Station: Woolwich Arsena" + "<p>" + "Pollution: 0.07")
+    } else {
+        t += 1;
+        d3.select('#tooltip').style({
+            visibility: 'hidden'
+        })
+    }
+    console.log(t);
+}
+for (p in stations) {
+    var toAppend = '<option>' + p + '</option>';
+    $("#stationStart").append(toAppend);
+    $("#stationEnd").append(toAppend);
+}
+</script>
+
 </html>
