@@ -1,11 +1,5 @@
 <!DOCTYLE html>
 <style>
-#tubeSvg {
-    width: 1080px;
-    height: 600px;
-    -webkit-filter: grayscale(0%);
-}
-
 #mapLegend {
     float: right;
 }
@@ -15,6 +9,22 @@
 <head>
     <title>VISUALIZATION</title>
     <style>
+    #pollutionC{
+        background-color: green;
+        color: white;
+    }
+    #pollutionF{
+        background-color: green;
+        color: white;
+    }
+    #timeC{
+        background-color: blue;
+        color: white;
+    }
+    #timeF{
+        background-color: blue;
+        color: white;
+    }
     body {
         font-family: sans-serif;
     }
@@ -38,7 +48,7 @@
     
     #tooltip {
         position: absolute;
-        left: 15;
+        left: 10;
         background-color: rgba(192, 188, 188, 0.8);
         padding: 5;
         border: solid 1px grey;
@@ -48,42 +58,54 @@
     </style>
 </head>
 
-<body>
+<body onload="svg()">
+    <h2>Route Planner</h2>
     <div id="tooltip">ToolTip</div>
     <div id='mapLegend'>
         <h5>Relative Pollution<p>Values</h5>
-        <svg width="100" height="800">
+        <svg width="100" height="500">
             <g id='legend'></g>
         </svg>
     </div>
-    <div id="tubeMap" onclick="link(event)">
-        <!-- <img src="{{ url_for('static', filename='img/tubemap-2012-12.png') }}" id="tubeSvg"> -->
     </div>
-    <form action='/route' method='POST'>
+    <form>
         <label>Start Station</label>
         <select id='stationStart'>
-            <option value="Aldermans Green">Aldermans Green</option>
+            <!-- <option value="Aldermans Green">Aldermans Green</option>
             <option value="Baker Street">Baker Street</option>
             <option value="Bank">Bank</option>
-            <option value="Trafalgar Square">Trafalgar Square</option>
+            <option value="Trafalgar Square">Trafalgar Square</option> -->
         </select>
         <label>End Station</label>
         <select id='stationEnd'>
-            <option value="Aldermans Green">Aldermans Green</option>
+            <!-- <option value="Aldermans Green">Aldermans Green</option>
             <option value="Baker Street">Baker Street</option>
             <option value="Bank">Bank</option>
-            <option value="Trafalgar Square">Trafalgar Square </option>
+            <option value="Trafalgar Square">Trafalgar Square </option> -->
         </select>
-        <br/>
-        <input type="submit" name="submit" value="Get route" id="submit">
+        <input type="button" onclick="change()" value="Get route" />
+        <!-- <button onclick="change()" id="submit"> Get route </button> -->
+        <!-- <br> {% if from_station %} Departing from {{ from_station }}. {% else %} No start station selected. {% endif %}
+        <br> {% if to_station %} Going to {{ to_station }}. {% else %} No destination station selected. {% endif %} -->
     </form>
+    <div id="tubeMap" onclick="link(event)">
+        <div id="cleanPath">
+            <p>Clean Path  &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp Pollution: <span id="pollutionC">NaN</span>&nbsp&nbsp Time: <span id="timeC">NaN</span></p>
+                <p id="cleanStr">No start/end station selected.</p>
+        </div>
+        <div id="fastPath">
+            <p>Fast Path &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp Pollution: <span id="pollutionF">NaN</span>&nbsp&nbsp Time: <span id="timeF">NaN</span></p>
+                <p id="fastStr">No start/end station selected.</p>
+        </div>
 </body>
 <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='js/station.js') }}"></script>
+<!-- <script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='js/d3.v3.min.js') }}"></script>
+<script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename='js/jquery-1.12.min.js') }}"></script> -->
 <script>
 //Parameters
-var height = 550;
+var height = 500;
 var width = 1000;
 var margin = {
     top: 20,
@@ -189,18 +211,25 @@ function render(data) {
 
 //Load data, run visualizations        
 d3.csv("{{ url_for('static', filename='resources/CUSPTubeDummy.csv') }}",
-    function(error, result) {
-        data = result;
-        render(result);
-    })
-// d3.xml("{{ url_for('static', filename='assets/map_svg.svg') }}", "image/svg+xml", function(error, xml) {
-d3.xml("{{ url_for('static', filename='assets/map.svg') }}", "image/svg+xml", function(error, xml) {    
-    if (error) throw error;
-    g = xml.documentElement;
-    g.setAttribute("id", "tubeSvg");
-    document.getElementById("tubeMap").appendChild(g);
-});
-console.log(t);
+        function(error, result) {
+            data = result;
+            render(result);
+        })
+    // d3.xml("{{ url_for('static', filename='assets/map_svg.svg') }}", "image/svg+xml", function(error, xml) {
+function svg() {
+    $("#tubeMap").prepend('<img id="tubeSvg" src={{ url_for("static", filename="img/tubemap.png") }} width="900" height="500"/>');
+    // var flag = true;
+    // if (flag) {
+    //     d3.xml("{{ url_for('static', filename='assets/map_svg.svg') }}", "image/svg+xml", function(error, xml) {
+    //         if (error) throw error;
+    //         g = xml.documentElement;
+    //         g.setAttribute("id", "tubeSvg");
+    //         console.log("No");
+    //         document.getElementById("tubeMap").appendChild(g);
+    //     });
+    // }
+    // console.log(flag);
+}
 
 function link(event) {
     if (t % 4 == 0) {
@@ -223,12 +252,53 @@ function link(event) {
             visibility: 'hidden'
         })
     }
-    console.log(t);
 }
 for (p in stations) {
     var toAppend = '<option>' + p + '</option>';
     $("#stationStart").append(toAppend);
     $("#stationEnd").append(toAppend);
+}
+
+var map = 0;
+var cleanStr1 = "Borough => London Bridge => Bank => Moorgate => Barbican => Farringdon => King's Cross St. Pancras => Euston Square Great Portland Street => Baker Street => Finchley Road =>Wembley Park => Preston Road => Northwick Park => Harrow-on-the-Hill => North Harrow => Pinner => Northwood Hills => Northwood => Moor Park => Rickmansworth => Chorleywood => Chalfont & Latimer => Chesham";
+var fastStr1 = "Borough=> Elephant & Castle=> Lambeth North=> Waterloo=> Westminster=> Green Park=> Bond Street=> Baker Street=> Finchley Road=> Wembley Park=> Preston Road=> Northwick Park=> Harrow-on-the-Hill=> North Harrow=> Pinner=> Northwood Hills=> Northwood=> Moor Park=> Rickmansworth=> Chorleywood=>Chalfont & Latimer=> Chesham";
+
+var cleanStr2 = "Euston=> King's Cross St. Pancras=> Euston Square=> Great Portland Street=> Baker Street=> Bond Street=> Green Park=> Victoria=> Pimlico=> Vauxhall=> Stockwell";
+var fastStr2 = "Euston=> Warren Street=> Oxford Circus=> Green Park=> Victoria=> Pimlico=> Vauxhall=> Stockwell";
+var pollution1 = "7.57"; //Route 1 Clean line
+var pollution2 = "9.88"; //Route 1 Fast line 
+var pollution3 = "8.86"; //Route 2 Clean line
+var pollution4 = "9.36"; //Route 2 Fast line
+
+var time1 = "74 min"; //Route 1 Clean line
+var time2 = "67 min"; //Route 2 Fast line
+var time3 = "22 min"; //Route 1 Clean line
+var time4 = "14 min"; //Route 2 Fast line
+function change() {
+    $("#tubeSvg").remove();
+    if (map == 0) {
+        $("#tubeMap").prepend('<img id="img1" src={{ url_for("static", filename="img/tubemap1a.png") }} width="900" height="500"/>');
+        map = 1;
+        document.getElementById('cleanStr').innerHTML = cleanStr1;
+        document.getElementById('pollutionC').innerHTML = pollution1;
+        document.getElementById('timeC').innerHTML = time1;
+        document.getElementById('fastStr').innerHTML = fastStr1;
+        document.getElementById('pollutionF').innerHTML = pollution2;
+        document.getElementById('timeF').innerHTML = time2;
+        return;
+    }
+    if (map == 1) {
+        $("#img1").remove();
+        $("#tubeMap").prepend('<img id="img1" src={{ url_for("static", filename="img/tubemap2.png") }} width="900" height="500"/>');
+        map = 2;
+        document.getElementById('cleanStr').innerHTML = cleanStr2;
+        document.getElementById('pollutionC').innerHTML = pollution3;
+        document.getElementById('timeC').innerHTML = time3;
+        document.getElementById('fastStr').innerHTML = fastStr2;
+        document.getElementById('pollutionF').innerHTML = pollution4;
+        document.getElementById('timeF').innerHTML = time4;
+        return;
+    }
 }
 </script>
 
